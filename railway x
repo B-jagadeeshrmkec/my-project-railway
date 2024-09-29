@@ -1,0 +1,184 @@
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+class Train {
+public:
+    int trainID;
+    string trainName;
+    string source;
+    string destination;
+    string departureTime;
+    string arrivalTime;
+
+    Train(int id, string name, string src, string dest, string depTime, string arrTime) {
+        trainID = id;
+        trainName = name;
+        source = src;
+        destination = dest;
+        departureTime = depTime;
+        arrivalTime = arrTime;
+    }
+};
+
+class Ticket {
+public:
+    int ticketID;
+    int trainID;
+    string passengerName;
+    string seatNumber;
+
+    Ticket(int tID, int trID, string pName, string seat) {
+        ticketID = tID;
+        trainID = trID;
+        passengerName = pName;
+        seatNumber = seat;
+    }
+};
+
+class Passenger {
+public:
+    int passengerID;
+    string passengerName;
+    int age;
+    string gender;
+
+    Passenger(int id, string name, int ageVal, string gen) {
+        passengerID = id;
+        passengerName = name;
+        age = ageVal;
+        gender = gen;
+    }
+};
+
+vector<Train> trains;
+vector<Ticket> tickets;
+vector<Passenger> passengers;
+int trainIDCounter = 1;
+int ticketIDCounter = 1;
+int passengerIDCounter = 1;
+
+// Function to add a new train
+void addTrain() {
+    string name, source, destination, departureTime, arrivalTime;
+    cout << "Enter train name: ";
+    cin >> name;
+    cout << "Enter source: ";
+    cin >> source;
+    cout << "Enter destination: ";
+    cin >> destination;
+    cout << "Enter departure time: ";
+    cin >> departureTime;
+    cout << "Enter arrival time: ";
+    cin >> arrivalTime;
+
+    trains.push_back(Train(trainIDCounter++, name, source, destination, departureTime, arrivalTime));
+    cout << "Train added successfully!" << endl;
+}
+
+// Function to view all trains
+void viewTrains() {
+    if (trains.empty()) {
+        cout << "No trains available." << endl;
+        return;
+    }
+
+    cout << "Available trains: " << endl;
+    for (const auto& train : trains) {
+        cout << "Train ID: " << train.trainID << ", Name: " << train.trainName
+             << ", From: " << train.source << " To: " << train.destination
+             << ", Departs: " << train.departureTime << ", Arrives: " << train.arrivalTime << endl;
+    }
+}
+
+// Function to book a ticket
+void bookTicket() {
+    int trainID;
+    string passengerName, seatNumber;
+    cout << "Enter train ID: ";
+    cin >> trainID;
+
+    // Check if train ID is valid
+    bool trainExists = false;
+    for (const auto& train : trains) {
+        if (train.trainID == trainID) {
+            trainExists = true;
+            break;
+        }
+    }
+
+    if (!trainExists) {
+        cout << "Train ID not found!" << endl;
+        return;
+    }
+
+    cout << "Enter passenger name: ";
+    cin >> passengerName;
+    cout << "Enter seat number: ";
+    cin >> seatNumber;
+
+    tickets.push_back(Ticket(ticketIDCounter++, trainID, passengerName, seatNumber));
+    passengers.push_back(Passenger(passengerIDCounter++, passengerName, 0, "N/A"));  // Simplified passenger addition
+    cout << "Ticket booked successfully!" << endl;
+}
+
+// Function to view passengers for a specific train
+void viewPassengersByTrain() {
+    int trainID;
+    cout << "Enter train ID: ";
+    cin >> trainID;
+
+    // Find tickets for the given train ID
+    bool foundPassengers = false;
+    for (const auto& ticket : tickets) {
+        if (ticket.trainID == trainID) {
+            cout << "Passenger: " << ticket.passengerName << ", Seat: " << ticket.seatNumber << endl;
+            foundPassengers = true;
+        }
+    }
+
+    if (!foundPassengers) {
+        cout << "No passengers found for the given train." << endl;
+    }
+}
+
+// Main menu function
+void showMenu() {
+    cout << "\n--- Railway Management System ---\n";
+    cout << "1. Add Train\n";
+    cout << "2. View Trains\n";
+    cout << "3. Book Ticket\n";
+    cout << "4. View Passengers by Train\n";
+    cout << "5. Exit\n";
+}
+
+int main() {
+    int choice;
+
+    while (true) {
+        showMenu();
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                addTrain();
+                break;
+            case 2:
+                viewTrains();
+                break;
+            case 3:
+                bookTicket();
+                break;
+            case 4:
+                viewPassengersByTrain();
+                break;
+            case 5:
+                cout << "Exiting the system." << endl;
+                return 0;
+            default:
+                cout << "Invalid choice! Please try again." << endl;
+        }
+    }
+}
